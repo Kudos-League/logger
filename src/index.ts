@@ -1,5 +1,6 @@
-import pino from 'pino';
 import 'dotenv/config';
+import pino from 'pino';
+import fetch from 'node-fetch';
 
 export function wrap(logger: pino.Logger) {
 	const { error, child } = logger;
@@ -30,7 +31,7 @@ export function wrap(logger: pino.Logger) {
 	return logger;
 }
 
-export const Logger = wrap(
+const logger = wrap(
 	pino({
 		level: process.env.LOG_LEVEL || 'debug',
 		transport: process.env.ENV !== 'development' ? undefined : {
@@ -69,4 +70,57 @@ export const Logger = wrap(
 	})
 );
 
-export default Logger;
+export async function postErrorToDiscord(error: Error, url: string, content?: string) {
+	try {
+		await fetch(url, {
+			method: 'POST',
+			body: JSON.stringify({
+				content: content || undefined,
+				embeds: [{
+					title: `An error occurred: ${error.message}`,
+					description: error.stack,
+					color: 0xff0000
+				}]
+			}),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+	}
+	catch (e: any) {
+		logger.error('Error with Discord webhook', e);
+	}
+}
+
+export default class Logger {
+	content?: string;
+	webhookURL?: string;
+
+	constructor({ content, webhookURL }: { content?: string, webhookURL?: string } = {}) {
+		this.content = content;
+		this.webhookURL = webhookURL;
+	}
+
+	static debug(...args: any) {
+		logger.debug(args);
+	}
+
+	static info(...args: any) {
+		logger.info(args);
+	}
+
+	static warn(...args: any) {
+		logger.warn(args);
+	}
+
+	static error(...args: any) {
+		logger.error(args);
+	}
+
+	error(...args: any) {
+		logger.error(args);
+		if (this.webhookURL) {
+			postErrorToDiscord(args[0], this.webhookURL, this.content);
+		}
+	}
+}

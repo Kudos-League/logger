@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "repository": "git@github.com:Progressive-Victory/Logger.git",
   "author": "Isabella <okami@progress.win>",
   "license": "MIT",
@@ -16,6 +20,7 @@
   },
   "dependencies": {
     "dotenv": "^16.3.1",
+    "node-fetch": "2",
     "pino": "^8.14.1",
     "pino-pretty": "^10.0.0"
   },
