@@ -16,7 +16,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "test": "jest --config jest.config.js",
-    "postinstall": "npm run build"
+    "postinstall": "yarn run build"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
