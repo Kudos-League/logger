@@ -20,15 +20,21 @@
   },
   "dependencies": {
     "dotenv": "^16.3.1",
+    "fastify": "^4.22.1",
     "node-fetch": "2",
     "pino": "^8.14.1",
     "pino-pretty": "^10.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.22.11",
+    "@babel/preset-env": "^7.22.14",
+    "@babel/preset-es2016": "^7.0.0-beta.53",
+    "@babel/preset-typescript": "^7.22.11",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.3",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
+    "babel-jest": "^29.6.4",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
