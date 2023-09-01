@@ -64,8 +64,9 @@ export default class Logger implements FastifyBaseLogger {
     this.webhookURL = options.webhookURL;
     this.level = process.env.LOG_LEVEL || 'info';
   }
+
   error(...args: any) {
-    this.base.error.apply(null, args);
+    this.base.error.apply(this.base, args);
     if (this.webhookURL) {
       postErrorToDiscord(args[0], this.webhookURL, this.content).catch((e) => {
         this.base.error('Error posting to Discord', e);
@@ -74,30 +75,30 @@ export default class Logger implements FastifyBaseLogger {
   }
 
   info(...args: any) {
-    this.base.info.apply(null, args);
+    this.base.info.apply(this.base, args);
   }
 
   warn(...args: any) {
-    this.base.warn.apply(null, args);
+    this.base.warn.apply(this.base, args);
   }
 
   debug(...args: any) {
-    this.base.debug.apply(null, args);
+    this.base.debug.apply(this.base, args);
   }
 
   trace(...args: any) {
-    this.base.trace.apply(null, args);
+    this.base.trace.apply(this.base, args);
   }
 
   fatal(...args: any) {
-    this.base.fatal.apply(null, args);
+    this.base.fatal.apply(this.base, args);
   }
 
   child(...args: any) {
-    return this.base.child.apply(null, args);
+    return this.base.child.apply(this.base, args);
   }
 
   silent(...args: any) {
-    return this.base.silent.apply(null, args);
+    return this.base.silent.apply(this.base, args);
   }
 }
