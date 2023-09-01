@@ -46,56 +46,58 @@ export function WrapLogger<T extends new (...args: any[]) => any>(
   };
 }
 
+type ExtendedLoggerOptions = {
+  content?: string;
+  webhookURL?: string;
+} & LoggerOptions;
+
 @WrapLogger
 export default class Logger implements FastifyBaseLogger {
-  private pinoLogger: pino.Logger;
+  private base: pino.Logger;
   private content?: string;
   private webhookURL?: string;
   public level: string;
 
-  constructor(
-    opts?: LoggerOptions,
-    { content, webhookURL }: { content?: string; webhookURL?: string } = {}
-  ) {
-    this.pinoLogger = pino(opts);
-    this.content = content;
-    this.webhookURL = webhookURL;
+  constructor(options: ExtendedLoggerOptions = {}) {
+    this.base = pino(options);
+    this.content = options.content;
+    this.webhookURL = options.webhookURL;
     this.level = process.env.LOG_LEVEL || 'info';
   }
   error(...args: any) {
-    this.pinoLogger.error.apply(null, args);
+    this.base.error.apply(null, args);
     if (this.webhookURL) {
       postErrorToDiscord(args[0], this.webhookURL, this.content).catch((e) => {
-        this.pinoLogger.error('Error posting to Discord', e);
+        this.base.error('Error posting to Discord', e);
       });
     }
   }
 
   info(...args: any) {
-    this.pinoLogger.info.apply(null, args);
+    this.base.info.apply(null, args);
   }
 
   warn(...args: any) {
-    this.pinoLogger.warn.apply(null, args);
+    this.base.warn.apply(null, args);
   }
 
   debug(...args: any) {
-    this.pinoLogger.debug.apply(null, args);
+    this.base.debug.apply(null, args);
   }
 
   trace(...args: any) {
-    this.pinoLogger.trace.apply(null, args);
+    this.base.trace.apply(null, args);
   }
 
   fatal(...args: any) {
-    this.pinoLogger.fatal.apply(null, args);
+    this.base.fatal.apply(null, args);
   }
 
   child(...args: any) {
-    return this.pinoLogger.child.apply(null, args);
+    return this.base.child.apply(null, args);
   }
 
   silent(...args: any) {
-    return this.pinoLogger.silent.apply(null, args);
+    return this.base.silent.apply(null, args);
   }
 }
