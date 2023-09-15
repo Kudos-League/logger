@@ -12,7 +12,7 @@
   "author": "Isabella <okami@progress.win>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "npx tsc",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "test": "jest --config jest.config.js",
