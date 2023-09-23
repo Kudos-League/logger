@@ -1,4 +1,6 @@
 import 'dotenv/config';
+import 'isomorphic-fetch';
+
 import pino, { LoggerOptions } from 'pino';
 import fetch from 'node-fetch';
 import { FastifyBaseLogger } from 'fastify';
