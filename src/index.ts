@@ -2,7 +2,6 @@ import 'dotenv/config';
 import 'isomorphic-fetch';
 
 import pino, { LoggerOptions } from 'pino';
-import fetch from 'node-fetch';
 import { FastifyBaseLogger } from 'fastify';
 
 async function postErrorToDiscord(error: Error, url: string, content?: string) {
