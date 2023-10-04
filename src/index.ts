@@ -4,6 +4,13 @@ import 'isomorphic-fetch';
 import pino, { LoggerOptions } from 'pino';
 import { FastifyBaseLogger } from 'fastify';
 
+function stringifyArg(arg: any): string {
+	if (typeof arg === 'object' && arg !== null) {
+		return JSON.stringify(arg);
+	}
+	return String(arg);
+}
+
 async function postErrorToDiscord(error: Error, url: string, content?: string) {
 	try {
 		await fetch(url, {
@@ -61,41 +68,60 @@ export default class Logger implements FastifyBaseLogger {
 	public level: string;
 
 	constructor(options: ExtendedLoggerOptions = {}) {
-		this.base = pino(options);
 		this.content = options.content;
 		this.webhookURL = options.webhookURL;
 		this.level = options.logLevel || process.env.LOG_LEVEL || 'info';
+		this.base = pino({ ...options, level: this.level });
+	}
+
+	private formatLogArgs(args: any[]): [any, string?] {
+		if (args[0] instanceof Error) {
+			const errObj = args[0];
+			const formattedMessage = args.slice(1).map(stringifyArg).join(' ');
+			return [{ err: errObj }, formattedMessage];
+		} else {
+			const formattedMessage = args.map(stringifyArg).join(' ');
+			return [formattedMessage];
+		}
 	}
 
 	error(...args: any) {
-		this.base.error.apply(this.base, args);
-		if (this.webhookURL) {
-			postErrorToDiscord(args[0], this.webhookURL, this.content).catch(
-				(e) => {
-					this.base.error('Error posting to Discord', e);
-				}
-			);
+		const [errOrMsg, formattedMessage] = this.formatLogArgs(args);
+		this.base.error(errOrMsg, formattedMessage);
+		if (this.webhookURL && errOrMsg.err) {
+			postErrorToDiscord(
+				errOrMsg.err,
+				this.webhookURL,
+				this.content
+			).catch((e) => {
+				this.base.error('Error posting to Discord', e);
+			});
 		}
 	}
 
 	info(...args: any) {
-		this.base.info.apply(this.base, args);
+		const [formattedMessage] = this.formatLogArgs(args);
+		this.base.info(formattedMessage);
 	}
 
 	warn(...args: any) {
-		this.base.warn.apply(this.base, args);
+		const [formattedMessage] = this.formatLogArgs(args);
+		this.base.warn(formattedMessage);
 	}
 
 	debug(...args: any) {
-		this.base.debug.apply(this.base, args);
+		const [formattedMessage] = this.formatLogArgs(args);
+		this.base.debug(formattedMessage);
 	}
 
 	trace(...args: any) {
-		this.base.trace.apply(this.base, args);
+		const [formattedMessage] = this.formatLogArgs(args);
+		this.base.trace(formattedMessage);
 	}
 
 	fatal(...args: any) {
-		this.base.fatal.apply(this.base, args);
+		const [formattedMessage] = this.formatLogArgs(args);
+		this.base.fatal(formattedMessage);
 	}
 
 	child(...args: any) {
