@@ -1,5 +1,5 @@
 {
-  "name": "logger",
+  "name": "@progressive-victory/logger",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -55,5 +55,10 @@
     "*.ts": [
       "eslint --fix"
     ]
+  },
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
