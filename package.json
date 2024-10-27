@@ -1,8 +1,8 @@
 {
-	"name": "@progressive-victory/logger",
+	"name": "@kudos/logger",
 	"version": "1.0.3",
-	"repository": "git@github.com:Progressive-Victory/Logger.git",
-	"author": "Isabella <okami@progress.win>",
+	"repository": "git@github.com:Kudos-League/logger.git",
+	"author": "Isabella <isabellafj97@gmail.com>",
 	"license": "MIT",
 	"scripts": {
 		"build": "swc ./src --out-dir dist && tsc --emitDeclarationOnly",
@@ -56,7 +56,6 @@
 			"eslint --fix"
 		]
 	},
-	"private": false,
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"

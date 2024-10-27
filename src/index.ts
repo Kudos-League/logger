@@ -60,18 +60,38 @@ type ExtendedLoggerOptions = {
 	logLevel?: string;
 } & LoggerOptions;
 
+type Level = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal' | 'silent';
+
 @WrapLogger
 export default class Logger implements FastifyBaseLogger {
 	private base: pino.Logger;
 	private content?: string;
 	private webhookURL?: string;
-	public level: string;
+	public level: Level = 'info';
 
 	constructor(options: ExtendedLoggerOptions = {}) {
 		this.content = options.content;
 		this.webhookURL = options.webhookURL;
-		this.level = options.logLevel || process.env.LOG_LEVEL || 'info';
-		this.base = pino({ ...options, level: this.level });
+		this.level = (options.logLevel ||
+			process.env.LOG_LEVEL ||
+			'info') as Level;
+		const isProduction = process.env.NODE_ENV === 'production';
+		const pinoOptions: LoggerOptions = {
+			...options,
+			level: this.level,
+			transport: !isProduction
+				? {
+						target: 'pino-pretty',
+						options: {
+							colorize: true,
+							translateTime: 'SYS:standard',
+							ignore: 'pid,hostname',
+						},
+				  }
+				: undefined,
+		};
+
+		this.base = pino(pinoOptions);
 	}
 
 	private formatLogArgs(args: any[]): [any, string?] {
