@@ -1,6 +1,6 @@
 {
-	"name": "@kudos/logger",
-	"version": "1.0.3",
+	"name": "@kudos-league/logger",
+	"version": "1.0.4",
 	"repository": "git@github.com:Kudos-League/logger.git",
 	"author": "Isabella <isabellafj97@gmail.com>",
 	"license": "MIT",
