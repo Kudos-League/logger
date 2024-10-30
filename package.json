@@ -1,11 +1,11 @@
 {
 	"name": "@kudos-league/logger",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"repository": "git@github.com:Kudos-League/logger.git",
 	"author": "Isabella <isabellafj97@gmail.com>",
 	"license": "MIT",
 	"scripts": {
-		"build": "swc src -d dist -D --strip-leading-paths --copy-files",
+		"build": "swc src -d dist -D --strip-leading-paths --copy-files && tsc --emitDeclarationOnly",
 		"lint": "prettier --check . && eslint . --ext .ts",
 		"format": "prettier --write . && eslint --fix --format=pretty src __tests__",
 		"test": "jest --config jest.config.js",
